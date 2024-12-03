@@ -16,25 +16,25 @@ public class SnakeMovement : MonoBehaviour
     {
         Vector2 positon = transform.position;
         Quaternion rotation = transform.rotation;
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (Input.GetKeyDown(KeyCode.W))
             if (move_direction != Direction.Down)
             {
                 transform.rotation = Quaternion.Euler(0, 0, 90);
                 move_direction = Direction.Up;
             }
-        if (Input.GetKeyDown(KeyCode.DownArrow))
+        if (Input.GetKeyDown(KeyCode.S))
             if (move_direction != Direction.Up)
             {
                 transform.rotation = Quaternion.Euler(0, 0, -90);
                 move_direction = Direction.Down;
             }
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (Input.GetKeyDown(KeyCode.D))
             if (move_direction != Direction.Left)
             {
                 transform.rotation = Quaternion.Euler(0, 0, 0);
                 move_direction = Direction.Right;
             }
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (Input.GetKeyDown(KeyCode.A))
             if (move_direction != Direction.Right)
             {
                 transform.rotation = Quaternion.Euler(0, 0, 180);
