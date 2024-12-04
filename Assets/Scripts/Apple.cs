@@ -13,7 +13,7 @@ public class Apple : MonoBehaviour
         if (food_spawn)
         {
             food_spawn.AppleGenerator(this.gameObject);
-            this.gameObject.GetComponent<Image>().enabled = true;
+            this.gameObject.GetComponent<SpriteRenderer>().enabled = true;
         }
         else
             Debug.Log("food spawn null");

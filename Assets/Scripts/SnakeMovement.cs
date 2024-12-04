@@ -1,64 +1,99 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SnakeMovement : MonoBehaviour
 {
-    Direction move_direction;
-    Direction forbidden_direction;
     [SerializeField] private float speed;
+    private float speed_multiplier = 1f;
     [SerializeField] private Camera main_camera;
-    private void Awake()
+    private List<Transform> snake_body_parts;
+    private Vector2Int direction = Vector2Int.right;
+    private Vector2Int user_input;
+    private float next_update;
+    [SerializeField] private Transform snake_body_segment;
+
+    private void Start()
     {
-        move_direction = Direction.Right;
+        snake_body_parts = new List<Transform>();
+        snake_body_parts.Add(this.transform);
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.GetComponent<Apple>())
+            Grow();
+    }
+
     void Update()
+    {
+        SnakeHeadMovement();
+    }
+
+    private void SnakeHeadMovement()
     {
         Vector2 positon = transform.position;
         Quaternion rotation = transform.rotation;
-        if (Input.GetKeyDown(KeyCode.W))
-            if (move_direction != Direction.Down)
+        if (direction.x != 0)
+        {
+            if (Input.GetKeyDown(KeyCode.W))
             {
-                transform.rotation = Quaternion.Euler(0, 0, 90);
-                move_direction = Direction.Up;
+                if (user_input != Vector2Int.up)    
+                {
+                    transform.eulerAngles = new Vector3(0f,0f,90f);
+                    user_input = Vector2Int.up;
+                }
             }
-        if (Input.GetKeyDown(KeyCode.S))
-            if (move_direction != Direction.Up)
+            if (Input.GetKeyDown(KeyCode.S))
             {
-                transform.rotation = Quaternion.Euler(0, 0, -90);
-                move_direction = Direction.Down;
+                if (user_input != Vector2Int.down)
+                {
+                    transform.eulerAngles = new Vector3(0f, 0f, -90f);
+                    user_input = Vector2Int.down;
+                }
             }
-        if (Input.GetKeyDown(KeyCode.D))
-            if (move_direction != Direction.Left)
+        }
+        if (direction.y != 0)
+        {
+            if (Input.GetKeyDown(KeyCode.D))
             {
-                transform.rotation = Quaternion.Euler(0, 0, 0);
-                move_direction = Direction.Right;
+                if (user_input != Vector2Int.right)
+                {
+                    transform.eulerAngles = new Vector3(0f, 0f, 0f);
+                    user_input = Vector2Int.right;
+                }
             }
-        if (Input.GetKeyDown(KeyCode.A))
-            if (move_direction != Direction.Right)
+            if (Input.GetKeyDown(KeyCode.A))
             {
-                transform.rotation = Quaternion.Euler(0, 0, 180);
-                move_direction = Direction.Left;
+                if (user_input != Vector2Int.left)
+                {
+                    transform.eulerAngles = new Vector3(0f, 0f, 180f);
+                    user_input = Vector2Int.left;
+                }
             }
-        if (move_direction == Direction.Right)
-            positon.x += speed * Time.deltaTime;
-        if (move_direction == Direction.Left)
-            positon.x -= speed * Time.deltaTime;
-        if (move_direction == Direction.Up)
-            positon.y += speed * Time.deltaTime;
-        if (move_direction == Direction.Down)
-            positon.y -= speed * Time.deltaTime;
-        //transform.rotation = rotation;
-        transform.position = positon;
+        }
     }
 
     private void FixedUpdate()
     {
+        if (Time.time < next_update)
+            return;
+        if (user_input != Vector2Int.zero)
+            direction = user_input;
+        for (int i = snake_body_parts.Count - 1; i>0; i--)
+        {
+            snake_body_parts[i].position = snake_body_parts[i - 1].position;
+        }
+        float x = transform.position.x + direction.x;
+        float y = transform.position.y + direction.y;
+        transform.position = new Vector2(x, y);
+        next_update = Time.time + (1f/(speed*speed_multiplier));
         WrapSnakeAroundScreen();
     }
 
     // This method checks if the snake's head is out of bounds and wraps it around
-    void WrapSnakeAroundScreen()
+    private void WrapSnakeAroundScreen()
     {
         Vector3 screen_position = main_camera.WorldToViewportPoint(transform.position);
 
@@ -82,5 +117,12 @@ public class SnakeMovement : MonoBehaviour
         {
             transform.position = main_camera.ViewportToWorldPoint(new Vector3(screen_position.x, 0, screen_position.z));
         }
+    }
+
+    private void Grow()
+    {
+        Transform snake_part = Instantiate(this.snake_body_segment);
+        snake_part.position = snake_body_parts[snake_body_parts.Count - 1].position;
+        snake_body_parts.Add(snake_part);
     }
 }
