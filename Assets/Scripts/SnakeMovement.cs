@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SnakeMovement : MonoBehaviour
@@ -13,18 +14,39 @@ public class SnakeMovement : MonoBehaviour
     private Vector2Int user_input;
     private float next_update;
     [SerializeField] private Transform snake_body_segment;
-
+    private Transform initial_positon;
+    [SerializeField] private string player_number;
     private void Start()
     {
         snake_body_parts = new List<Transform>();
         snake_body_parts.Add(this.transform);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.GetComponent<Apple>())
-            Grow();
-    }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (collision.gameObject.layer == 7)
+    //    {
+    //        if (collision.gameObject.GetComponent<Apple>().GetAppleStatus())
+    //            Grow();
+    //        else
+    //            Shrink();
+    //        Debug.Log("Snake Size: " + snake_body_parts.Count);
+    //    }
+    //    if (collision.gameObject.layer == 6)
+    //    {
+    //        Debug.Log("Hit Self");
+    //        ResetSnake();
+    //    }
+    //}
+
+    //private void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    if (collision.gameObject.layer == 6)
+    //    {
+    //        Debug.Log("Hit Self");
+    //        ResetSnake();
+    //    }
+    //}
 
     void Update()
     {
@@ -119,10 +141,33 @@ public class SnakeMovement : MonoBehaviour
         }
     }
 
-    private void Grow()
+    public void Grow()
     {
         Transform snake_part = Instantiate(this.snake_body_segment);
         snake_part.position = snake_body_parts[snake_body_parts.Count - 1].position;
         snake_body_parts.Add(snake_part);
+    }
+
+    public void Shrink()
+    {
+        if (snake_body_parts.Count > 1)
+        {
+            Transform snake_part = snake_body_parts[snake_body_parts.Count - 1];
+            snake_body_parts.RemoveAt(snake_body_parts.Count - 1);
+            Destroy(snake_part.gameObject);
+        }
+        else if (snake_body_parts.Count == 1)
+            ResetSnake();
+    }
+
+    public void ResetSnake()
+    {
+
+        GetComponent<ChangeScenes>().ChangeToScene(1);
+    }
+
+    public int GetSnakeSize()
+    {
+        return snake_body_parts.Count;
     }
 }

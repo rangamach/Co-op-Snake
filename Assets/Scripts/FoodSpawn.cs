@@ -7,10 +7,10 @@ using Random = UnityEngine.Random;
 
 public class FoodSpawn : MonoBehaviour
 {
-    private float min_x = -11.8f;
-    private float max_x = 11.8f;
-    private float min_y = -6.5f;
-    private float max_y = 6.5f;
+    private float min_x = -17.25f;
+    private float max_x = 17.25f;
+    private float min_y = -9.5f;
+    private float max_y = 9.5f;
 
     public void AppleGenerator(GameObject apple)
     {
