@@ -15,6 +15,7 @@ public class StartScene : MonoBehaviour
         AudioManager.Instance.PlayAudioMusic(AudioTypes.Background);
         play__button.onClick.AddListener(() => GoToScene(2));
         control_button.onClick.AddListener(() => GoToScene(1));
+        exit_button.onClick.AddListener(ExitGame);
     }
 
     private void GoToScene(int index)
