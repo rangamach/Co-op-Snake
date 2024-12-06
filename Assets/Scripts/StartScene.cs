@@ -8,6 +8,7 @@ public class StartScene : MonoBehaviour
 {
     [SerializeField] private Button play__button;
     [SerializeField] private Button control_button;
+    [SerializeField] private Button exit_button;
 
     private void Awake()
     {
@@ -21,5 +22,14 @@ public class StartScene : MonoBehaviour
         AudioManager.Instance.PlayAudioEffect(AudioTypes.ButtonClick);
         if(index == 2) AudioManager.Instance.PlayAudioEffect(AudioTypes.Resume);
         SceneManager.LoadScene(index);
+    }
+
+    private void ExitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
     }
 }
