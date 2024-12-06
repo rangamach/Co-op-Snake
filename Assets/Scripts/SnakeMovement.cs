@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -13,40 +14,15 @@ public class SnakeMovement : MonoBehaviour
     private Vector2Int direction = Vector2Int.right;
     private Vector2Int user_input;
     private float next_update;
-    [SerializeField] private Transform snake_body_segment;
-    private Transform initial_positon;
-    [SerializeField] private string player_number;
+    [SerializeField] private Transform p1_snake_body_segment;
+    [SerializeField] private Transform p2_snake_body_segment;
+    [SerializeField] private bool is_player_one;
+    [SerializeField] private ScoreCheck score_check;
     private void Start()
     {
         snake_body_parts = new List<Transform>();
         snake_body_parts.Add(this.transform);
     }
-
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    if (collision.gameObject.layer == 7)
-    //    {
-    //        if (collision.gameObject.GetComponent<Apple>().GetAppleStatus())
-    //            Grow();
-    //        else
-    //            Shrink();
-    //        Debug.Log("Snake Size: " + snake_body_parts.Count);
-    //    }
-    //    if (collision.gameObject.layer == 6)
-    //    {
-    //        Debug.Log("Hit Self");
-    //        ResetSnake();
-    //    }
-    //}
-
-    //private void OnCollisionEnter2D(Collision2D collision)
-    //{
-    //    if (collision.gameObject.layer == 6)
-    //    {
-    //        Debug.Log("Hit Self");
-    //        ResetSnake();
-    //    }
-    //}
 
     void Update()
     {
@@ -57,41 +33,85 @@ public class SnakeMovement : MonoBehaviour
     {
         Vector2 positon = transform.position;
         Quaternion rotation = transform.rotation;
-        if (direction.x != 0)
+        if (is_player_one)
         {
-            if (Input.GetKeyDown(KeyCode.W))
+            if (direction.x != 0)
             {
-                if (user_input != Vector2Int.up)    
+                if (Input.GetKeyDown(KeyCode.W))
                 {
-                    transform.eulerAngles = new Vector3(0f,0f,90f);
-                    user_input = Vector2Int.up;
+                    if (user_input != Vector2Int.up)
+                    {
+                        transform.eulerAngles = new Vector3(0f, 0f, 90f);
+                        user_input = Vector2Int.up;
+                    }
+                }
+                if (Input.GetKeyDown(KeyCode.S))
+                {
+                    if (user_input != Vector2Int.down)
+                    {
+                        transform.eulerAngles = new Vector3(0f, 0f, -90f);
+                        user_input = Vector2Int.down;
+                    }
                 }
             }
-            if (Input.GetKeyDown(KeyCode.S))
+            if (direction.y != 0)
             {
-                if (user_input != Vector2Int.down)
+                if (Input.GetKeyDown(KeyCode.D))
                 {
-                    transform.eulerAngles = new Vector3(0f, 0f, -90f);
-                    user_input = Vector2Int.down;
+                    if (user_input != Vector2Int.right)
+                    {
+                        transform.eulerAngles = new Vector3(0f, 0f, 0f);
+                        user_input = Vector2Int.right;
+                    }
+                }
+                if (Input.GetKeyDown(KeyCode.A))
+                {
+                    if (user_input != Vector2Int.left)
+                    {
+                        transform.eulerAngles = new Vector3(0f, 0f, 180f);
+                        user_input = Vector2Int.left;
+                    }
                 }
             }
         }
-        if (direction.y != 0)
+        else
         {
-            if (Input.GetKeyDown(KeyCode.D))
+            if (direction.x != 0)
             {
-                if (user_input != Vector2Int.right)
+                if (Input.GetKeyDown(KeyCode.UpArrow))
                 {
-                    transform.eulerAngles = new Vector3(0f, 0f, 0f);
-                    user_input = Vector2Int.right;
+                    if (user_input != Vector2Int.up)
+                    {
+                        transform.eulerAngles = new Vector3(0f, 0f, 90f);
+                        user_input = Vector2Int.up;
+                    }
+                }
+                if (Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    if (user_input != Vector2Int.down)
+                    {
+                        transform.eulerAngles = new Vector3(0f, 0f, -90f);
+                        user_input = Vector2Int.down;
+                    }
                 }
             }
-            if (Input.GetKeyDown(KeyCode.A))
+            if (direction.y != 0)
             {
-                if (user_input != Vector2Int.left)
+                if (Input.GetKeyDown(KeyCode.RightArrow))
                 {
-                    transform.eulerAngles = new Vector3(0f, 0f, 180f);
-                    user_input = Vector2Int.left;
+                    if (user_input != Vector2Int.right)
+                    {
+                        transform.eulerAngles = new Vector3(0f, 0f, 0f);
+                        user_input = Vector2Int.right;
+                    }
+                }
+                if (Input.GetKeyDown(KeyCode.LeftArrow))
+                {
+                    if (user_input != Vector2Int.left)
+                    {
+                        transform.eulerAngles = new Vector3(0f, 0f, 180f);
+                        user_input = Vector2Int.left;
+                    }
                 }
             }
         }
@@ -112,6 +132,14 @@ public class SnakeMovement : MonoBehaviour
         transform.position = new Vector2(x, y);
         next_update = Time.time + (1f/(speed*speed_multiplier));
         WrapSnakeAroundScreen();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.GetComponent<SnakeMovement>())
+        {
+            this.ResetSnake();
+        }
     }
 
     // This method checks if the snake's head is out of bounds and wraps it around
@@ -140,34 +168,65 @@ public class SnakeMovement : MonoBehaviour
             transform.position = main_camera.ViewportToWorldPoint(new Vector3(screen_position.x, 0, screen_position.z));
         }
     }
-
-    public void Grow()
+    public void Grow(int number)
     {
-        Transform snake_part = Instantiate(this.snake_body_segment);
-        snake_part.position = snake_body_parts[snake_body_parts.Count - 1].position;
-        snake_body_parts.Add(snake_part);
+        if (is_player_one)
+        {
+            for (int i = 0; i < number; i++)
+            {
+                Transform snake_part = Instantiate(this.p1_snake_body_segment);
+                snake_part.GetComponent<SnakeBody>().snake_head = this;
+                snake_part.position = snake_body_parts[snake_body_parts.Count - 1].position;
+                snake_body_parts.Add(snake_part);
+            }
+        }
+        else
+        {
+            for(int i = 0; i < number; i++)
+            {
+                Transform snake_part = Instantiate(this.p2_snake_body_segment);
+                snake_part.GetComponent<SnakeBody>().snake_head = this;
+                snake_part.position = snake_body_parts[snake_body_parts.Count - 1].position;
+                snake_body_parts.Add(snake_part);
+            }
+        }
     }
 
-    public void Shrink()
+    public void Shrink(int number)
     {
-        if (snake_body_parts.Count > 1)
+        for (int i = 0; i < number; i++)
         {
-            Transform snake_part = snake_body_parts[snake_body_parts.Count - 1];
-            snake_body_parts.RemoveAt(snake_body_parts.Count - 1);
-            Destroy(snake_part.gameObject);
+            if (snake_body_parts.Count > 1)
+            {
+                Transform snake_part = snake_body_parts[snake_body_parts.Count - 1];
+                snake_body_parts.RemoveAt(snake_body_parts.Count - 1);
+                Destroy(snake_part.gameObject);
+            }
+            else if (snake_body_parts.Count == 1)
+            {
+                ResetSnake();
+                break;
+            }
         }
-        else if (snake_body_parts.Count == 1)
-            ResetSnake();
     }
 
     public void ResetSnake()
     {
-
-        GetComponent<ChangeScenes>().ChangeToScene(1);
+        score_check.WhoWon();
     }
 
     public int GetSnakeSize()
     {
         return snake_body_parts.Count;
+    }
+
+    public bool GetIsPlayerOne()
+    {
+        return is_player_one;
+    }
+
+    public List<Transform> GetSnakeBodyList()
+    {
+        return snake_body_parts;
     }
 }

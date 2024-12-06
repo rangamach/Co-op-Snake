@@ -14,6 +14,7 @@ public class Apple : MonoBehaviour
         if (food_spawn)
         {
             food_spawn.AppleGenerator(this.gameObject);
+            AudioManager.Instance.PlayAudioEffect(AudioTypes.FoodSpawn);
             this.gameObject.GetComponent<SpriteRenderer>().enabled = true;
         }
         else
@@ -26,11 +27,19 @@ public class Apple : MonoBehaviour
         {
             SnakeMovement snake = collision.GetComponent<SnakeMovement>();
             if (is_healthy)
-                snake.Grow();
+            {
+                snake.Grow(RandomNumberGenerator(1, 6));
+            }
             else
-                snake.Shrink();
+            {
+                if(snake.GetSnakeSize() > 1)
+                    snake.Shrink(RandomNumberGenerator(2,snake.GetSnakeSize() - 1));
+                else
+                    snake.Shrink(1);
+            }
             Debug.Log("Snake Size: " + snake.GetSnakeSize());
             this.gameObject.SetActive(false);
+            AudioManager.Instance.PlayAudioEffect(AudioTypes.Eat);
         }
     }
 
@@ -43,5 +52,12 @@ public class Apple : MonoBehaviour
     public bool GetAppleStatus()
     {
         return is_healthy;
+    }
+
+    private int RandomNumberGenerator(int min, int max)
+    {
+        int random = Random.Range(min, max);
+        Debug.Log("Random Number :" + random);
+        return random;
     }
 }

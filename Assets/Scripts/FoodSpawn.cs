@@ -31,7 +31,10 @@ public class FoodSpawn : MonoBehaviour
     IEnumerator DelayFoodSpawn(GameObject food)
     {
         yield return new WaitForSeconds(5.0f);
-        if(food.GetComponent<Apple>())
+        if (food.GetComponent<Apple>())
+        {
+            AudioManager.Instance.PlayAudioEffect(AudioTypes.FoodSpawn);
             food.transform.gameObject.SetActive(true);
+        }
     }
 }

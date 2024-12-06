@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class SnakeBody : MonoBehaviour
 {
-
+    [HideInInspector]
+    public SnakeMovement snake_head;
     private void OnEnable()
     {
         StartCoroutine(DelayBoxCollider());
@@ -13,9 +14,26 @@ public class SnakeBody : MonoBehaviour
     {
         if (collision.GetComponent<SnakeMovement>())
         {
-            SnakeMovement snake = collision.GetComponent<SnakeMovement>();
-            Debug.Log("Hit Self.");
-            snake.ResetSnake();
+            SnakeMovement other_snake = collision.GetComponent<SnakeMovement>();
+            if (snake_head.GetIsPlayerOne() == other_snake.GetIsPlayerOne())
+            {
+                other_snake.ResetSnake();
+            }
+            else
+            {
+                AudioManager.Instance.PlayAudioEffect(AudioTypes.Eat);
+                List<Transform> parts = snake_head.GetSnakeBodyList();
+                int part_number = 0;
+                for(int i = 0; i<parts.Count;i++)
+                {
+                    if (parts[i] == this.transform)
+                    {
+                        part_number = i;
+                        break;
+                    }
+                }
+                snake_head.Shrink(part_number);
+            }
         }
     }
 
