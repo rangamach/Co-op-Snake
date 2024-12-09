@@ -8,6 +8,7 @@ public class Apple : MonoBehaviour
 
     [SerializeField] private FoodSpawn food_spawn;
     [SerializeField] private bool is_healthy;
+    [SerializeField] private GameObject sprite;
 
     private void Awake()
     {
@@ -23,23 +24,32 @@ public class Apple : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.GetComponent<SnakeMovement>())
+        if (collision.GetComponent<SnakeMovement>())
         {
             SnakeMovement snake = collision.GetComponent<SnakeMovement>();
             if (is_healthy)
             {
-                snake.Grow(RandomNumberGenerator(1, 6));
+                if(collision.GetComponent<Double>() && collision.GetComponent<Double>().is_active)
+                {
+                    snake.Grow();
+                }
+                snake.Grow();
+                this.gameObject.SetActive(false);
+                AudioManager.Instance.PlayAudioEffect(AudioTypes.Eat);
             }
             else
             {
-                if(snake.GetSnakeSize() > 1)
-                    snake.Shrink(RandomNumberGenerator(2,snake.GetSnakeSize() - 1));
-                else
-                    snake.Shrink(1);
+                if (sprite && !sprite.activeInHierarchy || sprite == null)
+                {
+                    if (snake.GetSnakeSize() > 1)
+                        snake.Shrink();
+                    else
+                        snake.Shrink();
+                    this.gameObject.SetActive(false);
+                    AudioManager.Instance.PlayAudioEffect(AudioTypes.Eat);
+                }
             }
             Debug.Log("Snake Size: " + snake.GetSnakeSize());
-            this.gameObject.SetActive(false);
-            AudioManager.Instance.PlayAudioEffect(AudioTypes.Eat);
         }
     }
 
@@ -54,10 +64,10 @@ public class Apple : MonoBehaviour
         return is_healthy;
     }
 
-    private int RandomNumberGenerator(int min, int max)
-    {
-        int random = Random.Range(min, max);
-        Debug.Log("Random Number :" + random);
-        return random;
-    }
+    //private int RandomNumberGenerator(int min, int max)
+    //{
+    //    int random = Random.Range(min, max);
+    //    Debug.Log("Random Number :" + random);
+    //    return random;
+    //}
 }

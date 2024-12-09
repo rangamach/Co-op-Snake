@@ -27,15 +27,23 @@ public class GameOver : MonoBehaviour
 
     private void SetText()
     {
-        if (winner == "Player 1 and Player 2")
+        if (PlayerPrefs.GetInt("Mode") == 1)
         {
-            player_text.text = winner + " tied with same points!!!";
-            score_text.text = "Player 1 and Player tied with " + score.ToString() + " points!!!";
+            player_text.text = PlayerPrefs.GetString("Winner");
+            score_text.text = "Player has " + score + " points!!!";
         }
-        else
+        else if (PlayerPrefs.GetInt("Mode") == 2)
         {
-            player_text.text = winner + " has won!!!";
-            score_text.text = winner + " won with " + score.ToString() + " points!!!";
+            if (winner == "Player 1 and Player 2")
+            {
+                player_text.text = winner + " tied with same points!!!";
+                score_text.text = "Player 1 and Player tied with " + score.ToString() + " points!!!";
+            }
+            else
+            {
+                player_text.text = winner + " has won!!!";
+                score_text.text = winner + " won with " + score.ToString() + " points!!!";
+            }
         }
     }
 
@@ -43,7 +51,14 @@ public class GameOver : MonoBehaviour
     {
         AudioManager.Instance.PlayAudioEffect(AudioTypes.ButtonClick);
         AudioManager.Instance.PlayAudioEffect(AudioTypes.Resume);
-        SceneManager.LoadScene(2);
+        if (PlayerPrefs.GetInt("Mode") == 1)
+        {
+            SceneManager.LoadScene(2);
+        }
+        else if (PlayerPrefs.GetInt("Mode") == 2)
+        {
+            SceneManager.LoadScene(3);
+        }
     }
 
 

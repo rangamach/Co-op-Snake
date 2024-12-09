@@ -48,7 +48,14 @@ public class Pause : MonoBehaviour
     private void Restart()
     {
         AudioManager.Instance.PlayAudioEffect(AudioTypes.ButtonClick);
-        SceneManager.LoadScene(2);
         Time.timeScale = 1;
+        if (PlayerPrefs.GetInt("Mode") == 1)
+        {
+            SceneManager.LoadScene(2);
+        }
+        else  if (PlayerPrefs.GetInt("Mode") == 2)
+        {
+            SceneManager.LoadScene(3);
+        }
     }
 }
