@@ -22,6 +22,16 @@ public class FoodSpawn : MonoBehaviour
         }
     }
 
+    public void PowerUpGenerator(GameObject power_up)
+    {
+        if (power_up.GetComponent<PowerUps>())
+        {
+            Vector3 power_up_position = GetFoodPosition();
+            power_up.transform.position = power_up_position;
+            StartCoroutine(DelayPowerUpSpawn(power_up));
+        }
+    }
+
     private Vector3 GetFoodPosition()
     {
         Vector3 food_position = new Vector3(Mathf.RoundToInt(Random.Range(min_x, max_x)), Mathf.RoundToInt(Random.Range(min_y, max_y)), 0f);
@@ -35,6 +45,16 @@ public class FoodSpawn : MonoBehaviour
         {
             AudioManager.Instance.PlayAudioEffect(AudioTypes.FoodSpawn);
             food.transform.gameObject.SetActive(true);
+        }
+    }
+
+    IEnumerator DelayPowerUpSpawn(GameObject power_up)
+    {
+        yield return new WaitForSeconds(5.0f);
+        if (power_up.GetComponent<PowerUps>())
+        {
+            AudioManager.Instance.PlayAudioEffect(AudioTypes.FoodSpawn);
+            power_up.transform.gameObject.SetActive(true);
         }
     }
 }

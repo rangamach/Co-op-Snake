@@ -32,7 +32,7 @@ public class SnakeBody : MonoBehaviour
                         break;
                     }
                 }
-                snake_head.Shrink(part_number);
+                snake_head.Shrink();
             }
         }
     }

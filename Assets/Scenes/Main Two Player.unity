@@ -1011,7 +1011,6 @@ GameObject:
   - component: {fileID: 824845318}
   - component: {fileID: 824845320}
   - component: {fileID: 824845319}
-  - component: {fileID: 824845321}
   m_Layer: 3
   m_Name: Snake Head 1
   m_TagString: Untagged
@@ -1176,18 +1175,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &824845321
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 824845315}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2f35f7dc242cb34d9d1146126cd2972, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &924088084
 GameObject:
   m_ObjectHideFlags: 0
@@ -1740,7 +1727,6 @@ GameObject:
   - component: {fileID: 1803101506}
   - component: {fileID: 1803101509}
   - component: {fileID: 1803101508}
-  - component: {fileID: 1803101507}
   m_Layer: 3
   m_Name: Snake Head 2
   m_TagString: Untagged
@@ -1766,18 +1752,6 @@ MonoBehaviour:
   p2_snake_body_segment: {fileID: 3291160744273944501, guid: 6192c26a492c5f34cb8c89e48a77cf27, type: 3}
   is_player_one: 0
   score_check: {fileID: 1752457093}
---- !u!114 &1803101507
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1803101505}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2f35f7dc242cb34d9d1146126cd2972, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!61 &1803101508
 BoxCollider2D:
   m_ObjectHideFlags: 0

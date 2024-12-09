@@ -129,6 +129,11 @@ public class SnakeMovement : MonoBehaviour
         }
         float x = transform.position.x + direction.x;
         float y = transform.position.y + direction.y;
+        if (GetComponent<Speed>() && GetComponent<Speed>().is_active)
+        {
+            x = transform.position.x + (direction.x * 2);
+            y = transform.position.y + (direction.y * 2);
+        }
         transform.position = new Vector2(x, y);
         next_update = Time.time + (1f/(speed*speed_multiplier));
         WrapSnakeAroundScreen();
@@ -168,34 +173,26 @@ public class SnakeMovement : MonoBehaviour
             transform.position = main_camera.ViewportToWorldPoint(new Vector3(screen_position.x, 0, screen_position.z));
         }
     }
-    public void Grow(int number)
+    public void Grow()
     {
         if (is_player_one)
         {
-            for (int i = 0; i < number; i++)
-            {
                 Transform snake_part = Instantiate(this.p1_snake_body_segment);
                 snake_part.GetComponent<SnakeBody>().snake_head = this;
                 snake_part.position = snake_body_parts[snake_body_parts.Count - 1].position;
                 snake_body_parts.Add(snake_part);
-            }
         }
         else
         {
-            for(int i = 0; i < number; i++)
-            {
                 Transform snake_part = Instantiate(this.p2_snake_body_segment);
                 snake_part.GetComponent<SnakeBody>().snake_head = this;
                 snake_part.position = snake_body_parts[snake_body_parts.Count - 1].position;
                 snake_body_parts.Add(snake_part);
-            }
         }
     }
 
-    public void Shrink(int number)
+    public void Shrink()
     {
-        for (int i = 0; i < number; i++)
-        {
             if (snake_body_parts.Count > 1)
             {
                 Transform snake_part = snake_body_parts[snake_body_parts.Count - 1];
@@ -205,9 +202,7 @@ public class SnakeMovement : MonoBehaviour
             else if (snake_body_parts.Count == 1)
             {
                 ResetSnake();
-                break;
             }
-        }
     }
 
     public void ResetSnake()
